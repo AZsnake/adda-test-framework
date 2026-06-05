@@ -1,0 +1,32 @@
+# AD9640 register init table (addr,data per line)
+# Sources:
+#   - AD9640 datasheet Rev. C Table 25 (memory map defaults / shadowed 0x08–0x18)
+#   - AN-877 "Interfacing to High Speed ADCs via SPI" (soft reset 0x00, transfer 0xFF)
+# Sequence: soft reset 0x3C → SPI default → DCS → offset trim → transfer
+#
+# Boot ROM chip field = 0x2 (AD9640), same as UART chip ID.
+#
+Address,Data
+# --- SPI soft reset (Register 0x00: set mirrored soft-reset bits per AN-877 Table 3) ---
+0x00,0x3C
+# Restore SPI port config: MSB-first, default 0x18 (Table 25)
+0x00,0x18
+# Channel index: program both ADC channels (Register 0x05, default 0x03)
+0x05,0x03
+# --- Shadowed setup (0x08–0x18); single transfer at end ---
+# NOTE: ALL writes to shadowed regs (0x08–0x18) must precede the 0xFF transfer.
+# A trailing shadowed write would silently miss the latch.
+# Power modes: normal operation (Register 0x08)
+0x08,0x00
+# Global clock: duty cycle stabilizer enabled (Register 0x09, default 0x01)
+0x09,0x01
+# Clock divide: divide-by-1 (Register 0x0B)
+0x0B,0x00
+# Offset adjust / gain trim, both channels via 0x05=0x03 (Register 0x10, default 0x00)
+0x10,0x00
+# Output mode: CMOS, outputs enabled, two's complement (Register 0x14)
+0x14,0x01
+# VREF: 2.0 V p-p full scale (Register 0x18, default 0xC0)
+0x18,0xC0
+# Transfer shadowed registers to active (Register 0xFF) — must be LAST
+0xFF,0x01

@@ -1,0 +1,31 @@
+# AD9117 register init table (addr,data per line)
+# Source: AD9117 datasheet Rev. F Table 13 (SPI register map) + Table 14
+# Sequence: soft reset 0x00=0x20→0x00, MSB-first, I/Q gain, addr[4:0] only
+#
+# Valid SPI addresses: 0x00–0x1F (instruction uses A4:A0; addr[7:5] must be 0 in RTL).
+# Boot ROM chip field = 0x3 (AD9117), same as UART chip ID.
+#
+Address,Data
+# --- Software reset (Register 0x00 Bit 5); reload defaults except 0x00 ---
+0x00,0x20
+# Release reset; MSB-first, 5-bit addressing (Table 13 default 0x00)
+0x00,0x00
+# Power-down: LDO on, analog/digital on, I/Q DAC and clocks enabled (default 0x40)
+0x01,0x40
+# Data control (datasheet Table 13 bit map, MSB->LSB):
+#   b7 TWOS | b6 rsvd | b5 IFIRST | b4 IRISING | b3 SIMULBIT | b2 DCI_EN | b1 DCOSGL | b0 DCODBL
+# TWOS: 0 = unsigned binary (chip default), 1 = twos complement.
+# FPGA TX path emits 14-bit TWOS-complement (midpoint 0x0000), so TWOS MUST be 1.
+# 0xB4 = TWOS(b7) | IFIRST(b5) | IRISING(b4) | DCI_EN(b2).
+# NOTE: the old 0x34 left TWOS=0 (= power-on default = unsigned binary), which
+# inverts the MSB at the DAC -> full-scale, amplitude-independent garbage output.
+0x02,0xB4
+# I DAC fine gain (Register 0x03, default 0x00)
+0x03,0x00
+# Q DAC fine gain (Register 0x06, default 0x00)
+0x06,0x00
+# CLKMODE (Register 0x14): pulse Reacquire (bit3, 0->1) after CLKIN/DCLKIO change.
+# Required when SI5340 OUT3 -> 122.88 MHz; retimer searches up to 128 CLKIN cycles.
+0x14,0x08
+# Clear Reacquire so a later 0->1 edge can re-trigger if needed.
+0x14,0x00
