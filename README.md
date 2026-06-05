@@ -26,7 +26,7 @@
 
 ## 架构总览
 
-![VU13P ADDA 整体设计框图](docs/VU13P_ADDA_整体设计框图.svg)
+![VU13P ADDA 整体设计框图](docs/VU13P_ADDA_整体设计框图.jpg)
 
 ```
 rf_adda_top
@@ -73,7 +73,7 @@ rf_adda_top
 
 | 芯片 | 官网 |
 |------|------|
-| SI5340 | [silabs.com](https://www.silabs.com/timing/clocks/high-performance-clocks/si5340) |
+| SI5340 | [silabs.com](https://www.skyworksinc.com/en/Products/Timing/Ultra-Low-Jitter-Clock-Generators/Si5340A) |
 | AD9640 | [analog.com](https://www.analog.com/en/products/ad9640.html) |
 | AD9117 | [analog.com](https://www.analog.com/en/products/ad9117.html) |
 
