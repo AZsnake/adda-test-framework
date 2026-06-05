@@ -26,13 +26,14 @@ venv/
 # PC tool captures and exports (regenerable)
 tools/adda/data/
 
-# ----- Board-confidential (Scenario B: local / internal only) -----
+# ----- Board-confidential (local / internal only) -----
 constraints/adda_io.xdc
 docs/schematics/
 docs/metrics/
-docs/VU13P_ADDA_整体设计框图.svg
-init_tables/*
-!init_tables/README.md
+# docs/VU13P_ADDA_整体设计框图.svg  ← now public, tracked in git
+
+# Chip datasheets — copyrighted by vendor; download from vendor website
+docs/specs/
 
 # Local measurement / debug exports under docs/
 docs/*.xlsx
