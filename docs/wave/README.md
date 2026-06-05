@@ -1,50 +1,43 @@
-# DAC reference IQ waveforms
+# DAC 参考 IQ 波形
 
-Looping complex-sine playback files for the AD9117 DAC path (`dac_wave_player`
-→ `tx_iq_dsp` 2× halfband interp → `tx_ddr_out`). Upload with
-`tools/adda/dac/wave_upload.py`; regenerate this whole folder with
-`tools/adda/dac/gen_ref_waveforms.py`.
+AD9117 DAC 路径（`dac_wave_player` → `tx_iq_dsp` 2× 半带插值 → `tx_ddr_out`）的循环复数正弦播放文件。
+使用 `tools/adda/dac/wave_upload.py` 上传；用 `tools/adda/dac/gen_ref_waveforms.py` 重新生成本目录全部文件。
 
-## Naming standard
+## 命名规范
 
 ```
-sine_iq_<tone>_<level>.<ext>
+sine_iq_<音调>_<电平>.<扩展名>
 ```
 
-| field | meaning |
-|-------|---------|
-| `sine_iq` | complex sine, interleaved I/Q |
-| `<tone>`  | tone frequency, RKM notation — `9M00` = 9.00 MHz, `3M84` = 3.84 MHz |
-| `<level>` | amplitude in dBFS vs s14 full scale (±8191): `-6dBFS`, `-12dBFS`, `-18dBFS` |
-| `<ext>`   | `.bin` = little-endian, `.WAVEFORM` = big-endian (same data, byte-swapped) |
+| 字段 | 含义 |
+|------|------|
+| `sine_iq` | 复数正弦，I/Q 交错 |
+| `<音调>` | 音调频率，RKM 记法 — `9M00` = 9.00 MHz，`3M84` = 3.84 MHz |
+| `<电平>` | 相对 s14 满幅（±8191）的幅度 dBFS：`-6dBFS`、`-12dBFS`、`-18dBFS` |
+| `<扩展名>` | `.bin` = 小端序，`.WAVEFORM` = 大端序（内容相同，字节序相反） |
 
-Fixed for every file (kept out of the name): **Fs = 61.44 MSa/s/ch** (sys_clk/2),
-**1 MB** = 262144 IQ pairs, **coherent record** (integer cycles → seamless loop
-and coherent FFT).
+每个文件固定参数（未写入文件名）：**Fs = 61.44 MSa/s/ch**（sys_clk/2），
+**1 MB** = 262144 个 IQ 样点，**相干记录**（整数周期 → 无缝循环与相干 FFT）。
 
-## Amplitude convention (unified 14-bit)
+## 幅度约定（统一 14-bit）
 
-Samples are **signed-14 (±8191 = full scale)** stored in int16. The TX chain maps
-them **1:1** to the DAC — no `>>2` / ÷4. dBFS ↔ peak code (each 6 dB halves it):
+样本为 **有符号 14 位（±8191 = 满幅）**，存储在 int16 中。TX 链 **1:1** 映射到 DAC，不做 `>>2` / ÷4。dBFS 与峰值码字对应关系（每 6 dB 减半）：
 
-| level | peak (s14) |
-|-------|-----------|
+| 电平 | 峰值（s14） |
+|------|------------|
 | −6 dBFS  | 4096 |
 | −12 dBFS | 2048 |
 | −18 dBFS | 1024 |
 
-−6 dBFS is the default working level: it leaves headroom for the halfband
-interpolator's passband overshoot (keep peak ≲7200 ≈ −1 dB to avoid saturation
-in `tx_iq_dsp.reduce14`).
+−6 dBFS 为默认工作电平：为半带插值器通带过冲留有余量（峰值建议 ≲7200 ≈ −1 dB，避免 `tx_iq_dsp.reduce14` 饱和）。
 
-## Current files
+## 当前文件
 
-| file | tone | level |
-|------|------|-------|
+| 文件 | 音调 | 电平 |
+|------|------|------|
 | `sine_iq_3M84_-6dBFS`  | 3.84 MHz | −6 dBFS  |
 | `sine_iq_9M00_-6dBFS`  | 9.00 MHz | −6 dBFS  |
 | `sine_iq_9M00_-12dBFS` | 9.00 MHz | −12 dBFS |
 | `sine_iq_9M00_-18dBFS` | 9.00 MHz | −18 dBFS |
 
-The 9 MHz set forms a 6-dB amplitude ladder for SFDR-vs-level sweeps. Each stem
-exists as both `.bin` and `.WAVEFORM`.
+9 MHz 组构成 6 dB 步进幅度阶梯，可用于 SFDR-幅度扫描。每个文件同时提供 `.bin` 和 `.WAVEFORM` 两种格式。

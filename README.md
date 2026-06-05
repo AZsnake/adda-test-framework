@@ -1,32 +1,32 @@
-# ADDA Test Framework
+# ADDA 测试框架
 
-面向 **Xilinx VU13P + SI5340 / AD9640 / AD9117** 的 FPGA bring-up 与验证框架：UART 命令、三芯片 SPI boot、ADC IQ DSP 链、DAC 2× DDR 发射，以及 PySide6 / Python 测试工具链。
+面向 **Xilinx VU13P + SI5340 / AD9640 / AD9117** 的 FPGA 调试与验证框架：UART 命令、三芯片 SPI 自动 boot、ADC IQ DSP 链、DAC 2× DDR 发射，以及 PySide6 / Python 测试工具链。
 
-**Vivado top:** `rf_adda_top`
+**Vivado 顶层模块：** `rf_adda_top`
 
-> **Open source / privacy model**  
-> This repo publishes the **framework** (RTL, protocol, tools, simulation).  
-> Board-specific **pin constraints**, **schematics**, and **boot init tables** are **not** in git — clone后需本地补齐。详见 [`docs/OPEN_SOURCE.md`](docs/OPEN_SOURCE.md) 与 [`docs/BOARD_LOCAL_FILES.md`](docs/BOARD_LOCAL_FILES.md)。
+> 本仓库提供完整的 RTL 框架、UART 协议、仿真、PC 工具及芯片初始化配置。引脚约束需结合具体板卡自行准备（参考 `constraints/adda_io.template.xdc`），clone 后不能直接综合上板。
 
-License: [MIT](LICENSE)（第三方模块见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）
+许可证：[MIT](LICENSE)（第三方模块见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）
 
 ---
 
-## Highlights
+## 功能亮点
 
-| Area | Content |
-|------|---------|
-| End-to-end bring-up | UART Ping → SPI → auto boot → ADC capture → DAC waveform |
-| UART protocol | 921600 8N1; SPI, boot, ADC snapshot/stream, DAC tone/wave, RX chain config |
-| Zero-PC boot | `boot_fsm` + `boot_rom` for three chips |
-| RX DSP | CIC → DDC → IQ balance → FIR → BRAM snapshot / UART stream |
-| TX 2× DDR | Halfband interp + ODDRE1 I/Q mux; DCLKIO phase mux |
-| Host tools | PySide6 GUI + CLI capture / FFT / waveform upload |
-| Simulation | 11 testbenches (UART, boot, TX/RX chains) |
+| 方向 | 内容 |
+|------|------|
+| 端到端调试 | UART Ping → SPI → 自动 boot → ADC 采集 → DAC 波形 |
+| UART 协议 | 921600 8N1；SPI、boot、ADC 快照/流式、DAC 音调/波形、RX 链配置 |
+| 零 PC boot | `boot_fsm` + `boot_rom` 驱动三芯片上电初始化 |
+| RX DSP 链 | CIC → DDC → IQ 平衡 → FIR → BRAM 快照 / UART 流式输出 |
+| TX 2× DDR | 半带插值 + ODDRE1 I/Q 交织；DCLKIO 相位可选 |
+| 主机工具 | PySide6 GUI + CLI 采集 / FFT / 波形上传 |
+| 仿真 | 11 个测试台（UART、boot、TX/RX 链路） |
 
 ---
 
-## Architecture
+## 架构总览
+
+![VU13P ADDA 整体设计框图](docs/VU13P_ADDA_整体设计框图.svg)
 
 ```
 rf_adda_top
@@ -39,19 +39,19 @@ rf_adda_top
 
 ---
 
-## Quick start (after clone)
+## 快速上手
 
-1. Copy pin template → local constraints (fill PACKAGE_PIN from **your** schematic):
+1. 复制引脚模板，按实际原理图填写 `PACKAGE_PIN`：
 
    ```bash
    copy constraints\adda_io.template.xdc constraints\adda_io.xdc
    ```
 
-2. Generate boot ROM locally — [`init_tables/README.md`](init_tables/README.md)
+2. 如需调整时钟配置，重新生成 boot ROM，参考 [`init_tables/README.md`](init_tables/README.md)；默认配置（122.88 MHz）已就绪。
 
-3. Vivado: Top `rf_adda_top`, constraints = local `adda_io.xdc` + `adda_clocks.xdc` + `adda_dac_ddr.xdc`
+3. Vivado：顶层设 `rf_adda_top`，约束文件 = `adda_io.xdc` + `adda_clocks.xdc` + `adda_dac_ddr.xdc`。
 
-4. Host tools:
+4. 安装主机工具并启动 GUI：
 
    ```bash
    pip install -r tools/adda/requirements.txt
@@ -60,25 +60,32 @@ rf_adda_top
 
 ---
 
-## Documentation
+## 文档索引
 
-| Doc | Purpose |
-|-----|---------|
-| [`docs/uart_command_protocol.md`](docs/uart_command_protocol.md) | Full UART command reference |
-| [`docs/OPEN_SOURCE.md`](docs/OPEN_SOURCE.md) | What is public vs local; history cleanup before going public |
-| [`docs/BOARD_LOCAL_FILES.md`](docs/BOARD_LOCAL_FILES.md) | Board-confidential file list |
-| [`tools/README.md`](tools/README.md) | Python tool layout |
+| 文档 | 说明 |
+|------|------|
+| [`docs/uart_command_protocol.md`](docs/uart_command_protocol.md) | UART 命令协议完整参考 |
+| [`tools/README.md`](tools/README.md) | Python 工具目录说明 |
+| [`docs/wave/README.md`](docs/wave/README.md) | DAC 参考波形格式与幅度约定 |
+| [`init_tables/README.md`](init_tables/README.md) | boot ROM 生成流程 |
+
+芯片数据手册请从厂商官网获取：
+
+| 芯片 | 官网 |
+|------|------|
+| SI5340 | [silabs.com](https://www.silabs.com/timing/clocks/high-performance-clocks/si5340) |
+| AD9640 | [analog.com](https://www.analog.com/en/products/ad9640.html) |
+| AD9117 | [analog.com](https://www.analog.com/en/products/ad9117.html) |
 
 ---
 
-## Simulation
+## 仿真
 
-Set sim top to `tb_uart_cmd_parser`, run `run -all` in XSim → expect `tb_uart_cmd_parser: PASS`.
+将仿真顶层设为 `tb_uart_cmd_parser`，在 XSim 中运行 `run -all`，预期输出 `tb_uart_cmd_parser: PASS`。
 
 ---
 
-## Notes
+## 备注
 
-- Target part example: `xcvu13p-fhga2104-2-i` (adapt to your board).
-- `SYS_CLK_HZ` = `122_880_000` must match `clk_wiz_0`.
-- Before making this repo **public**, scrub git history if it ever contained pin/schematic/init files — see [`docs/OPEN_SOURCE.md`](docs/OPEN_SOURCE.md).
+- 目标器件示例：`xcvu13p-fhga2104-2-i`（请按实际板卡调整）。
+- `SYS_CLK_HZ` = `122_880_000`，须与 `clk_wiz_0` 输出频率一致。
