@@ -1,0 +1,11 @@
+# Deps for tools/adc (CLI + GUI)
+pyserial>=3.5
+numpy>=1.20
+
+# CLI plotting tool adc_capture_plot.py uses matplotlib
+matplotlib>=3.5
+
+# Main GUI (adda_test_gui_qt.py): pyqtgraph plots with native
+# pan/zoom/crosshair + dark/light theme. PySide6 is the Qt binding.
+PySide6>=6.5
+pyqtgraph>=0.13

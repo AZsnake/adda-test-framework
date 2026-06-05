@@ -1,0 +1,61 @@
+# AI / agent tooling (local only, do not commit)
+.cursor/
+.cursorrules
+.agents/
+.claude/
+CLAUDE.md
+AGENTS.md
+TASK.md
+skills-lock.json
+*.plan.md
+.copilot/
+.github/copilot-instructions.md
+.aider*
+.continue/
+
+# Third-party tool bundles (not part of this repo)
+verible-v0.0-4053-g89d4d98a-win64/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# PC tool captures and exports (regenerable)
+tools/adda/data/
+
+# ----- Board-confidential (Scenario B: local / internal only) -----
+constraints/adda_io.xdc
+docs/schematics/
+docs/metrics/
+docs/VU13P_ADDA_整体设计框图.svg
+init_tables/*
+!init_tables/README.md
+
+# Local measurement / debug exports under docs/
+docs/*.xlsx
+docs/*.csv
+docs/*.png
+docs/schematics/_*
+
+# Simulation build artifacts
+sim/*.vvp
+sim/*_sim
+xsim.dir/
+*.wdb
+
+# Vivado generated output (if a project is ever placed inside the repo)
+*.runs/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.jou
+*.bit
+*.ltx
+
+# OS metadata
+Thumbs.db
+desktop.ini
+.DS_Store
