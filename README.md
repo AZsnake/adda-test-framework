@@ -4,7 +4,7 @@
 
 **Vivado 顶层模块：** `rf_adda_top`
 
-> 本仓库提供完整的 RTL 框架、UART 协议、仿真、PC 工具及芯片初始化配置。引脚约束需结合具体板卡自行准备（参考 `constraints/adda_io.template.xdc`），clone 后不能直接综合上板。
+> 个人开源作品集，展示 BES（恒玄科技）实习期间的 FPGA 验证工程实践。不含公司内部文档、未授权原理图或未脱敏板卡资料。引脚约束需结合具体板卡自行准备（参考 `constraints/adda_io.template.xdc`），clone 后不能直接综合上板。
 
 许可证：[MIT](LICENSE)（第三方模块见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）
 
@@ -89,3 +89,6 @@ rf_adda_top
 
 - 目标器件示例：`xcvu13p-fhga2104-2-i`（请按实际板卡调整）。
 - `SYS_CLK_HZ` = `122_880_000`，须与 `clk_wiz_0` 输出频率一致。
+- 不含公司内部文档、未授权原理图、真实板级管脚约束或未脱敏硬件资料。
+- 传感器/芯片厂商寄存器表、数据手册等受版权约束的文件**未包含或未跟踪**；初始化表仅为个人联调配置，不代表厂商推荐设置。
+- Xilinx IP 与第三方模块遵循各自许可条款（见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）。

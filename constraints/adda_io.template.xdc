@@ -1,6 +1,6 @@
 # rf_adda_top pin constraints — TEMPLATE ONLY (no real PACKAGE_PIN values).
 #
-# Copy to adda_io.xdc (gitignored) and fill from your internal board package:
+# Copy to adda_io.xdc (gitignored) and fill from your board schematic:
 #   copy constraints\adda_io.template.xdc constraints\adda_io.xdc
 #
 # Required port groups (must match rf_adda_top.v):

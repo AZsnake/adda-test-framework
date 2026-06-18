@@ -1,6 +1,6 @@
 # tools/
 
-RF/ADDA 工程配套脚本。**不加入 Vivado 工程。** 各功能按子目录分类。
+ADDA 工程配套 PC 端脚本。**不加入 Vivado 工程。** 各功能按子目录分类。
 
 ## 目录结构
 
@@ -15,6 +15,7 @@ tools/
 │   ├── data/         # 采集输出 CSV / 导出文件（.gitignore 忽略）
 │   └── requirements.txt
 ├── boot/             # boot ROM / 初始化表生成器
+├── vsg/              # 外部信号发生器 ARB 波形（与 FPGA RTL 无关）
 ├── vivado/           # 实现后 Tcl（在 Vivado 控制台运行）
 └── utf8/             # 仓库文本编码工具
 ```
@@ -46,6 +47,12 @@ tools/
 | `diag/` | `rx_chain_smoke.py` | 端到端 RX 链冒烟测试 |
 | `diag/` | `rf_diag.py` | 原始 UART ping / 探测 |
 
+## vsg/
+
+| 脚本 | 用途 |
+|------|------|
+| `gen_sq_iq_clock.py` | 生成外部 VSG 用 20 MHz 方波 IQ `.bin` / `.WAVEFORM`（125 MSa/s，I=Q） |
+
 ## boot/ 与 utf8/
 
 | 目录 | 脚本 | 用途 |
@@ -66,6 +73,12 @@ python tools/adda/adc/adc_capture_plot.py -p COM3 -n 256
 
 # DAC 波形上传
 python tools/adda/dac/wave_upload.py COM7 docs/wave/sine_iq_9M00_-6dBFS.WAVEFORM --play
+
+# VSG 方波时钟 ARB（外部信号发生器，非 FPGA 上传）
+python tools/vsg/gen_sq_iq_clock.py \
+  --fs-hz 125000000 --tone-hz 20000000 \
+  -o docs/wave/sq_iq_20M00_125Msps.bin \
+  --waveform-out docs/wave/sq_iq_20M00_125Msps.WAVEFORM
 
 # 生成 boot ROM 镜像
 python tools/boot/cbpro_to_mem.py --chip si5340 INPUT.txt -o init_tables/si5340_init.mem

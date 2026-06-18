@@ -1,4 +1,8 @@
-# AI / agent tooling (local only, do not commit)
+# =============================================================================
+# ADDA 测试框架 — track source; ignore generated, local pins, licensed docs
+# =============================================================================
+
+# --- AI / IDE (local) ---
 .cursor/
 .cursorrules
 .agents/
@@ -12,51 +16,79 @@ skills-lock.json
 .github/copilot-instructions.md
 .aider*
 .continue/
+.vscode/
+.idea/
 
-# Third-party tool bundles (not part of this repo)
-verible-v0.0-4053-g89d4d98a-win64/
+# --- Secrets / credentials ---
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
 
-# Python
+# --- OS junk ---
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# --- Python ---
 __pycache__/
 *.py[cod]
 *.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
 .venv/
 venv/
 
-# PC tool captures and exports (regenerable)
-tools/adda/data/
-
-# ----- Board-confidential (local / internal only) -----
+# --- Board-specific (package pins from schematics) ---
 constraints/adda_io.xdc
+
+# --- Licensed / confidential documentation ---
 docs/schematics/
-docs/metrics/
-# docs/VU13P_ADDA_整体设计框图.svg  ← now public, tracked in git
-
-# Chip datasheets — copyrighted by vendor; download from vendor website
 docs/specs/
-
-# Local measurement / debug exports under docs/
+docs/metrics/
 docs/*.xlsx
 docs/*.csv
-docs/*.png
 docs/schematics/_*
 
-# Simulation build artifacts
+# --- Vendor tool project files (may contain local paths) ---
+*.slabtimeproj
+
+# --- Third-party tool bundles (not part of this repo) ---
+verible-v0.0-4053-g89d4d98a-win64/
+
+# --- PC tool captures (regenerable) ---
+tools/adda/data/
+
+# --- Simulation build artifacts ---
 sim/*.vvp
 sim/*_sim
 xsim.dir/
 *.wdb
 
-# Vivado generated output (if a project is ever placed inside the repo)
+# --- Xilinx Vivado generated output ---
+.Xil/
 *.runs/
 *.cache/
+*.gen/
 *.hw/
 *.ip_user_files/
+*.sim/
 *.jou
+*.pb
+*.rpt
+*.vdi
+*.vds
+*.wdf
+*.dcp
+*.ncd
 *.bit
+*.bin
+*.mcs
 *.ltx
-
-# OS metadata
-Thumbs.db
-desktop.ini
-.DS_Store
+*.mmi
+*.xsa
