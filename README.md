@@ -8,6 +8,16 @@
 
 许可证：[MIT](LICENSE)（第三方模块见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）
 
+## 相关项目
+
+同 **VU13P** 平台开源 FPGA 验证框架（统一 `fpga/` + `tools/` 仓库布局）：
+
+| 仓库 | 说明 |
+|------|------|
+| [**sensor-test-framework-soft-core**](https://github.com/AZsnake/sensor-test-framework-soft-core) | MIPI CSI-2 — MicroBlaze 固件 + Vitis（IMX298） |
+| [**sensor-test-framework-pure-rtl**](https://github.com/AZsnake/sensor-test-framework-pure-rtl) | MIPI CSI-2 — 纯 RTL 控制（IMX298） |
+| [**adda-test-framework**](https://github.com/AZsnake/adda-test-framework) | **本仓库** — ADDA RF 调试（SI5340 / AD9640 / AD9117） |
+
 ---
 
 ## 功能亮点
