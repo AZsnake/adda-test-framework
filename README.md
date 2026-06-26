@@ -4,7 +4,7 @@
 
 **Vivado 顶层模块：** `rf_adda_top`
 
-> 个人开源作品集，展示 BES（恒玄科技）实习期间的 FPGA 验证工程实践。不含公司内部文档、未授权原理图或未脱敏板卡资料。引脚约束需结合具体板卡自行准备（参考 `constraints/adda_io.template.xdc`），clone 后不能直接综合上板。
+> 本仓库为开源 FPGA 验证参考实现。不含板级原理图或未公开的硬件资料。引脚约束需结合具体板卡自行准备（参考 `fpga/constraints/adda_io.template.xdc`），clone 后不能直接综合上板。
 
 许可证：[MIT](LICENSE)（第三方模块见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）
 
@@ -24,6 +24,24 @@
 
 ---
 
+## 仓库结构
+
+```
+adda-test-framework/
+├── fpga/
+│   ├── rtl/                  # rf_adda_top、rf_ctrl_path、rf_datapath 等
+│   ├── data/                 # boot_rom.mem、各芯片 init 表
+│   ├── constraints/          # adda_io.template.xdc（需复制为 adda_io.xdc）
+│   ├── scripts/              # create_project.tcl、cbpro_to_mem.py
+│   ├── sim/                  # 模块级 testbench + run_sims.ps1
+│   └── vivado/               # 生成工程目录（.gitignore，本地构建产物）
+├── tools/                    # PySide6 上位机 + UART 协议库 + CLI
+├── docs/
+└── README.md
+```
+
+---
+
 ## 架构总览
 
 ![VU13P ADDA 整体设计框图](docs/VU13P_ADDA_整体设计框图.jpg)
@@ -39,24 +57,44 @@ rf_adda_top
 
 ---
 
+## 上位机工具
+
+PySide6 综合 ADDA 测试 GUI 提供 UART 连接、ADC 快照/流式采集、DAC 波形上传与链路诊断。详见 [`tools/README.md`](tools/README.md)。
+
+---
+
 ## 快速上手
+
+**环境：** Vivado **2024.2** · Python 3.10+
 
 1. 复制引脚模板，按实际原理图填写 `PACKAGE_PIN`：
 
    ```bash
-   copy constraints\adda_io.template.xdc constraints\adda_io.xdc
+   cp fpga/constraints/adda_io.template.xdc fpga/constraints/adda_io.xdc
    ```
 
-2. 如需调整时钟配置，重新生成 boot ROM，参考 [`init_tables/README.md`](init_tables/README.md)；默认配置（122.88 MHz）已就绪。
+   Windows CMD：`copy fpga\constraints\adda_io.template.xdc fpga\constraints\adda_io.xdc`
 
-3. Vivado：顶层设 `rf_adda_top`，约束文件 = `adda_io.xdc` + `adda_clocks.xdc` + `adda_dac_ddr.xdc`。
+2. 如需调整时钟配置，重新生成 boot ROM，参考 [`fpga/data/README.md`](fpga/data/README.md)；默认配置（122.88 MHz）已就绪。
+
+3. 生成 Vivado 工程：
+
+   ```bash
+   vivado -mode batch -source fpga/scripts/create_project.tcl
+   ```
+
+   注：`clk_wiz_0` / `clk_wiz_1` / ILA IP 须按 `fpga/rtl/rf_adda_top.v` 注释在 Vivado 中配置；综合与实现请在 Vivado GUI 中完成。
 
 4. 安装主机工具并启动 GUI：
 
    ```bash
-   pip install -r tools/adda/requirements.txt
-   python tools/adda/gui/adda_test_gui_qt.py
+   cd tools
+   pip install -r config/requirements.txt
+   ./run_gui.sh          # Linux / macOS
+   run_gui.bat           # Windows
    ```
+
+5. 连接串口 → **Ping** 确认链路 → ADC 快照 / DAC 波形上传验证。
 
 ---
 
@@ -67,7 +105,9 @@ rf_adda_top
 | [`docs/uart_command_protocol.md`](docs/uart_command_protocol.md) | UART 命令协议完整参考 |
 | [`tools/README.md`](tools/README.md) | Python 工具目录说明 |
 | [`docs/wave/README.md`](docs/wave/README.md) | DAC 参考波形格式与幅度约定 |
-| [`init_tables/README.md`](init_tables/README.md) | boot ROM 生成流程 |
+| [`fpga/data/README.md`](fpga/data/README.md) | boot ROM 生成流程 |
+| [`fpga/scripts/create_project.tcl`](fpga/scripts/create_project.tcl) | Vivado 工程一键生成 |
+| [`fpga/scripts/cbpro_to_mem.py`](fpga/scripts/cbpro_to_mem.py) | boot ROM 初始化表生成 |
 
 芯片数据手册请从厂商官网获取：
 
@@ -81,14 +121,15 @@ rf_adda_top
 
 ## 仿真
 
-将仿真顶层设为 `tb_uart_cmd_parser`，在 XSim 中运行 `run -all`，预期输出 `tb_uart_cmd_parser: PASS`。
+将仿真顶层设为 `tb_uart_cmd_parser`，在 XSim 中运行 `run -all`，预期输出 `tb_uart_cmd_parser: PASS`。  
+批量运行：`fpga/sim/run_sims.ps1`（需本地 Vivado simulator）。
 
 ---
 
 ## 备注
 
-- 目标器件示例：`xcvu13p-fhga2104-2-i`（请按实际板卡调整）。
+- 目标器件：`xcvu13p-fhga2104-2-i`（请按实际板卡调整）。
 - `SYS_CLK_HZ` = `122_880_000`，须与 `clk_wiz_0` 输出频率一致。
-- 不含公司内部文档、未授权原理图、真实板级管脚约束或未脱敏硬件资料。
-- 传感器/芯片厂商寄存器表、数据手册等受版权约束的文件**未包含或未跟踪**；初始化表仅为个人联调配置，不代表厂商推荐设置。
+- 不含板级原理图、真实管脚约束或未公开的硬件资料。
+- 芯片厂商寄存器表、数据手册等受版权约束的文件**未包含或未跟踪**；初始化表仅为参考配置，不代表厂商推荐设置。
 - Xilinx IP 与第三方模块遵循各自许可条款（见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）。

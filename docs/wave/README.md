@@ -1,11 +1,11 @@
-# IQ 参考波形
+﻿# IQ 参考波形
 
 本目录包含两类 IQ 波形文件，布局相同：int16 交错 `I0, Q0, I1, Q1, ...`；`.bin` 小端序，`.WAVEFORM` 大端序。
 
 ## DAC 正弦参考（FPGA 板载播放）
 
 AD9117 DAC 路径（`dac_wave_player` → `tx_iq_dsp` 2× 半带插值 → `tx_ddr_out`）的循环复数正弦播放文件。
-使用 `tools/adda/dac/wave_upload.py` 上传；用 `tools/adda/dac/gen_ref_waveforms.py` 重新生成本目录全部正弦文件。
+使用 `tools/scripts/dac/wave_upload.py` 上传；用 `tools/scripts/dac/gen_ref_waveforms.py` 重新生成本目录全部正弦文件。
 
 ### 命名规范
 

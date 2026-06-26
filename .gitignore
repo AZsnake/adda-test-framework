@@ -18,6 +18,9 @@ skills-lock.json
 .continue/
 .vscode/
 .idea/
+.clangd
+*.swp
+*~
 
 # --- Secrets / credentials ---
 .env
@@ -45,12 +48,13 @@ __pycache__/
 venv/
 
 # --- Board-specific (package pins from schematics) ---
-constraints/adda_io.xdc
+fpga/constraints/adda_io.xdc
 
 # --- Licensed / confidential documentation ---
 docs/schematics/
 docs/specs/
 docs/metrics/
+docs/*BOARD*
 docs/*.xlsx
 docs/*.csv
 docs/schematics/_*
@@ -62,18 +66,18 @@ docs/schematics/_*
 verible-v0.0-4053-g89d4d98a-win64/
 
 # --- PC tool captures (regenerable) ---
-tools/adda/data/
+tools/data/
 
 # --- Simulation build artifacts ---
-sim/*.vvp
-sim/*_sim
+fpga/sim/*.vvp
+fpga/sim/*_sim
 xsim.dir/
 *.wdb
 
-# --- Xilinx Vivado generated output ---
+# --- Xilinx Vivado ---
 .Xil/
-*.runs/
 *.cache/
+*.runs/
 *.gen/
 *.hw/
 *.ip_user_files/
@@ -92,3 +96,17 @@ xsim.dir/
 *.ltx
 *.mmi
 *.xsa
+fpga/vivado/**/utils_1/imports/
+
+# --- Vivado generated (no Vitis) ---
+*.o
+*.d
+.pdi
+.vitisWorkspace.json
+.hash-map.txt
+.buildstatus
+.ninja_log
+compile_commands.json
+.cache/
+*.xpfm
+*.spfm
